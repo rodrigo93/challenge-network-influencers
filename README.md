@@ -48,6 +48,30 @@ Once complete, hit 'run' to test your method against sample inputs
 
 ## Running the solution
 
-_TODO_
 
-## Additional notes from author
+First you need to install all dependencies by running
+### `bundle install`
+
+Then, to run the solution run the following command in your terminal from this directory
+### `ruby src/update_challenge.rb`
+
+## Notes from the author
+
+From the description and after writing down the challenge, it looks like a [Graph Theory][GF] issue with directed graphs.
+The **user** is a **node** and the **relationship** are the **edges/link**.
+It's known that Graph Theory has many [algorithms that solve different problems][Algorithms].
+
+The last time I've worked with Graphs was back in the undergrad days during the Graphs chair 🥲 (more than 6 years ago).
+Even though, after reading through the algorithms again, [Depth-first search][DFS] sounds like a good fit for this
+problem:
+
+> Depth-first search (DFS) is an algorithm for traversing or searching tree or graph data structures.
+> The algorithm starts at the root node (selecting some arbitrary node as the root node in the case of a graph) and
+> **_explores as far as possible along each branch before backtracking._**
+
+Does that last sentence ring any bells? From the illustrated graph, for each node, we want to know
+as far it can go (influences). So, let's give it a try!
+
+[Algorithms]:https://en.wikipedia.org/wiki/Graph_theory#Algorithms
+[DFS]:https://en.wikipedia.org/wiki/Depth-first_search
+[GF]:https://en.wikipedia.org/wiki/Graph_theory
