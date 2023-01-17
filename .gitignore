@@ -16,6 +16,9 @@
 # Ignore Byebug command history file.
 .byebug_history
 
+# IntelliJ files
+.idea
+
 ## Specific to RubyMotion:
 .dat*
 .repl_history
