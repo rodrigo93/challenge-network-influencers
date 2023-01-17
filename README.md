@@ -39,6 +39,8 @@ Then **Monica** influences Rachel, Ross and Chandler. **Phoebe** influences Joey
 network influences 3 or more people, therefore **Monica** and **Phoebe** are the most influential people in the network
 and a correct output would be `['Monica', 'Phoebe']`
 
+![followers_illustration.png](imgs%2Ffollowers_illustration.png)
+
 Write the body of the `find_influencers` method that gets a list of followings as input and returns the list of most
 influential users in the network.
 
@@ -47,3 +49,5 @@ Once complete, hit 'run' to test your method against sample inputs
 ## Running the solution
 
 _TODO_
+
+## Additional notes from author
