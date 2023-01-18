@@ -1,5 +1,47 @@
-def find_influencers(followings)
-  return []
+require_relative "graph"
+
+def find_influencers(relationships)
+  users_followers    = relationships.group_by { |(_follower, followed)| followed }
+  users              = users_followers.keys
+  nodes              = build_followed_nodes(relationships: relationships, users: users)
+  influencers_count  = users.map { |user| [user, 0] }.to_h
+
+  users.each do |user|
+    discovered_nodes = initialize_discovered_nodes(users, relationships)
+    Graph.deep_first_search(user, user, nodes, discovered_nodes, influencers_count)
+  end
+
+  max = influencers_count.values.max
+  influencers_count.select { |_key, value| value == max }.keys
+end
+
+# @param array - An array of String of Symbol
+# @return - A hash of empty arrays with given array elements as keys
+def to_hash_of_arrays(array)
+  array.map { |element| [element, []] }.to_h
+end
+
+# @param relationships - Array of tuple arrays where [0] follows [1]
+# @param users         - Unique list of users
+#
+# @return Hash - key: represents a user, value: array of followers of that user
+def build_followed_nodes(relationships:, users:)
+  nodes = to_hash_of_arrays(users)
+
+  relationships.each do |relationship|
+    followed = relationship[1]
+    follower = relationship[0]
+
+    nodes[followed] << follower unless followed.eql?(follower)
+  end
+
+  nodes
+end
+
+def initialize_discovered_nodes(users, relationships)
+  discovered_nodes = to_hash_of_arrays(users)
+  relationships.each { |relationship| discovered_nodes[relationship[1]] << false }
+  discovered_nodes
 end
 
 #############################
@@ -16,10 +58,16 @@ inputs.each_with_index do |input, index|
       puts "Correct! :)"
       score += 1
     else
+      # TODO: undo
+      # puts "Input: #{input} \n"
+      # puts "Expected output: #{expected_output} \n"
+      # puts "Result: #{find_influencers(input).sort} \n"
+
       puts "Incorrect :("
     end
-  rescue Exception => e
-    puts "Errored :|"
+  # TODO: Undo
+  # rescue Exception => e
+  #   puts "Errored :|"
   end
 end
 

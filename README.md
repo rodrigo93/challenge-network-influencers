@@ -72,6 +72,24 @@ problem:
 Does that last sentence ring any bells? From the illustrated graph, for each node, we want to know
 as far it can go (influences). So, let's give it a try!
 
+### First try
+
+First try was not simple, as I had to normalize the input and prepare the field for
+the custom DFS.
+
+My first solution went quite well, **scoring 23 out 26** from the existing "solution checker".
+Problem is, my solution is not taking into consideration influencer's followers also
+following among themselves.
+
+The image below shows the DFS running for **Monica**, and the dotted lines are the iterations.
+The red lines are the iterations that should not happen, as they are generating false positives.
+E.g when checking for **Rachel**, **Ross** is the only follower and should not be visited anymore
+nor increase Monica's influencer count.
+
+![first_solution.png](imgs%2Ffirst_solution.png)
+
+Given that, we need to improve our solution.
+
 [Algorithms]:https://en.wikipedia.org/wiki/Graph_theory#Algorithms
 [DFS]:https://en.wikipedia.org/wiki/Depth-first_search
 [GF]:https://en.wikipedia.org/wiki/Graph_theory
