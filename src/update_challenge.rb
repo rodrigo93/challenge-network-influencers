@@ -1,18 +1,18 @@
+require "set"
 require_relative "graph"
 
 def find_influencers(relationships)
   users_followers    = relationships.group_by { |(_follower, followed)| followed }
   users              = users_followers.keys
   nodes              = build_followed_nodes(relationships: relationships, users: users)
-  influencers_count  = users.map { |user| [user, 0] }.to_h
+  influencers_reach  = users.map { |user| [user, Set.new] }.to_h
 
   users.each do |user|
     discovered_nodes = initialize_discovered_nodes(users, relationships)
-    Graph.deep_first_search(user, user, nodes, discovered_nodes, influencers_count)
+    Graph.deep_first_search(user, user, nodes, discovered_nodes, influencers_reach)
   end
 
-  max = influencers_count.values.max
-  influencers_count.select { |_key, value| value == max }.keys
+  find_influent_users(influencers_reach)
 end
 
 # @param array - An array of String of Symbol
@@ -38,6 +38,14 @@ def build_followed_nodes(relationships:, users:)
   nodes
 end
 
+# @param influencers_reach - Hash of sets where key is a `user` and value is the `users` that `user` influences
+#
+# @return Array of most influential users
+def find_influent_users(influencers_reach)
+  max = influencers_reach.map { |_key, value| value.size }.max
+  influencers_reach.select    { |_key, value| value.size == max }.keys
+end
+
 def initialize_discovered_nodes(users, relationships)
   discovered_nodes = to_hash_of_arrays(users)
   relationships.each { |relationship| discovered_nodes[relationship[1]] << false }
@@ -58,16 +66,10 @@ inputs.each_with_index do |input, index|
       puts "Correct! :)"
       score += 1
     else
-      # TODO: undo
-      # puts "Input: #{input} \n"
-      # puts "Expected output: #{expected_output} \n"
-      # puts "Result: #{find_influencers(input).sort} \n"
-
       puts "Incorrect :("
     end
-  # TODO: Undo
-  # rescue Exception => e
-  #   puts "Errored :|"
+  rescue Exception => e
+    puts "Errored :|"
   end
 end
 

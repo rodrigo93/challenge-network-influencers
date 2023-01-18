@@ -90,6 +90,16 @@ nor increase Monica's influencer count.
 
 Given that, we need to improve our solution.
 
+### Second try
+
+False positives are handled. I decided to change the swap the `influencers_count` — a simple counter that would sum
+up every time a not visited node is visited — by `influencers_reach` a `Set` object from the [set][SetGem] gem.
+This alternative is very handy as `Set` already takes care of duplicates and now the amount of people influenced by
+a user is accounted outside of DFS.
+
+Although, the score still 23 out 26 🤔. Why's that? I don't know, I need to dig further.
+
 [Algorithms]:https://en.wikipedia.org/wiki/Graph_theory#Algorithms
 [DFS]:https://en.wikipedia.org/wiki/Depth-first_search
 [GF]:https://en.wikipedia.org/wiki/Graph_theory
+[SetGem]:https://github.com/ruby/set

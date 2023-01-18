@@ -8,7 +8,7 @@ module Graph
   #     for all directed edges from v to w that are in G.adjacentEdges(v) do
   #         if vertex w is not labeled as discovered then
   #             recursively call DFS(G, w)
-  def deep_first_search(root_user, user, nodes, discovered_nodes, influencers_count)
+  def deep_first_search(root_user, user, nodes, discovered_nodes, influencers_reach)
     followers = nodes[user]
 
     return if followers.nil?
@@ -17,8 +17,8 @@ module Graph
       next if discovered_nodes[user][index]
 
       discovered_nodes[user][index] = true
-      influencers_count[root_user]  += 1
-      deep_first_search(root_user, follower, nodes, discovered_nodes, influencers_count)
+      influencers_reach[root_user].add(follower)
+      deep_first_search(root_user, follower, nodes, discovered_nodes, influencers_reach)
     end
   end
 end
