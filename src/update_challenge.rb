@@ -46,6 +46,10 @@ def find_influent_users(influencers_reach)
   influencers_reach.select    { |_key, value| value.size == max }.keys
 end
 
+# @param relationships - Array of tuple arrays where [0] follows [1]
+# @param users         - Unique list of users
+#
+# @return Hash - The same hash structure of `build_followed_nodes`, but the values array are Booleans
 def initialize_discovered_nodes(users, relationships)
   discovered_nodes = to_hash_of_arrays(users)
   relationships.each { |relationship| discovered_nodes[relationship[1]] << false }

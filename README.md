@@ -99,6 +99,120 @@ a user is accounted outside of DFS.
 
 Although, the score still 23 out 26 🤔. Why's that? I don't know, I need to dig further.
 
+## Third try
+
+To start understanding why some scenarios are still failing, I took one of the **problematic input**, **expected output**
+and **current output** to analyse:
+
+```ruby
+input = [
+  ["user2", "user7"],
+  ["user2", "user8"],
+  ["user2", "user13"],
+  ["user3", "user5"],
+  ["user3", "user12"],
+  ["user5", "user2"],
+  ["user5", "user4"],
+  ["user6", "user2"],
+  ["user9", "user6"],
+  ["user10", "user11"],
+  ["user11", "user1"],
+  ["user11", "user7"],
+  ["user11", "user12"],
+  ["user12", "user2"],
+  ["user12", "user4"],
+  ["user12", "user6"],
+  ["user12", "user10"],
+  ["user13", "user1"],
+  ["user13", "user3"]
+]
+
+expected_output = ["user1", "user4", "user7", "user8"]
+
+current_output = [
+  "user1",
+  "user10",
+  "user11",
+  "user12",
+  "user13",
+  "user2",
+  "user3",
+  "user4",
+  "user5",
+  "user6",
+  "user7",
+  "user8"
+]
+```
+
+To better visualize it, I made the following sketch:
+
+![incorrect_scenario_sample.png](imgs%2Fincorrect_scenario_sample.png)
+
+The arrows represent node X is following node Y (x -> y). **Yellow** nodes are the expected output, while **red** nodes
+are the ones that are incorrectly in the output.
+
+While debugging the code after DFS is done, I am getting the following:
+
+```ruby
+influencers_reach.sort.map { |key, value| [key, value.size] }
+
+[["user1", 9], ["user10", 9], ["user11", 9], ["user12", 9], ["user13", 9], ["user2", 9], ["user3", 9], ["user4", 9], ["user5", 9], ["user6", 9], ["user7", 9], ["user8", 9]]
+```
+
+So every user (except `user_9`) influences `9` users.
+
+After doing a small Desk Check of the algorithm for initial users, I noticed the expected output is correct, and  users
+`2, 3, 5, 6` should have "influencers reach" equal to 8 not 9, as shown below.
+
+![desk_check.png](imgs%2Fdesk_check.png)
+
+Checking `influencers_reach` on a `byebug` console, I got:
+
+```ruby
+influencers_reach.sort
+[["user1", #<Set: {"user11", "user10", "user12", "user3", "user13", "user2", "user5", "user6", "user9"}>],
+ ["user10", #<Set: {"user12", "user3", "user13", "user2", "user5", "user6", "user9", "user11", "user10"}>],
+ ["user11", #<Set: {"user10", "user12", "user3", "user13", "user2", "user5", "user6", "user9", "user11"}>],
+ ["user12", #<Set: {"user3", "user13", "user2", "user5", "user6", "user9", "user12", "user11", "user10"}>],
+ ["user13", #<Set: {"user2", "user5", "user3", "user13", "user6", "user9", "user12", "user11", "user10"}>],
+ ["user2", #<Set: {"user5", "user3", "user13", "user2", "user6", "user9", "user12", "user11", "user10"}>],
+ ["user3", #<Set: {"user13", "user2", "user5", "user3", "user6", "user9", "user12", "user11", "user10"}>],
+ ["user4", #<Set: {"user5", "user3", "user13", "user2", "user6", "user9", "user12", "user11", "user10"}>],
+ ["user5", #<Set: {"user3", "user13", "user2", "user5", "user6", "user9", "user12", "user11", "user10"}>],
+ ["user6", #<Set: {"user9", "user12", "user3", "user13", "user2", "user5", "user6", "user11", "user10"}>],
+ ["user7", #<Set: {"user2", "user5", "user3", "user13", "user6", "user9", "user12", "user11", "user10"}>],
+ ["user8", #<Set: {"user2", "user5", "user3", "user13", "user6", "user9", "user12", "user11", "user10"}>]]
+```
+
+Now, take a closer look to `user10`'s set 🕵... `user10` is included in it's own set 🤦🏽.
+
+```ruby
+# old version
+influencers_reach[root_user].add(follower)
+
+# new version
+influencers_reach[root_user].add(follower) if root_user != follower
+```
+
+**After applying the mentioned changes, the score is now 26/26 🎉🏆.**
+
+## Author's considerations
+At first glance, the challenge seems easy as it is just a "small" file and implements a method. After reading through
+and taking some notes, I noticed that was kind of an iceberg's tip.  The challenge made me rescue my Graphs &
+Data Structure chairs of more than 7 years ago during my undergrad times 🥲.
+
+In the end (_it doesn't even matter 🎶_), as can be noticed, I did not create any specs as I usually do because the
+given code already works as such. Additionally, I did not move the `find_influencers` method to a class
+because I am not allowed to change the code below the marked line. Moving the code to a class could make the code
+cleaner and more object-oriented as we could initialize the normalized data in the object, hence, there would be
+less need to send `users`, `relationships`, etc as args.
+
+I decided to add some comments to make it easier to understand the code as this kind of algorithm is hard to digest at
+first glance. I included Git history of the solution in case you would like to see its evolution.
+
+That's it, folks! Looking forward to e-meeting you! 🤘 
+
 [Algorithms]:https://en.wikipedia.org/wiki/Graph_theory#Algorithms
 [DFS]:https://en.wikipedia.org/wiki/Depth-first_search
 [GF]:https://en.wikipedia.org/wiki/Graph_theory

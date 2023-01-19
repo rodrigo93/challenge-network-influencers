@@ -17,7 +17,7 @@ module Graph
       next if discovered_nodes[user][index]
 
       discovered_nodes[user][index] = true
-      influencers_reach[root_user].add(follower)
+      influencers_reach[root_user].add(follower) if root_user != follower
       deep_first_search(root_user, follower, nodes, discovered_nodes, influencers_reach)
     end
   end
