@@ -1,6 +1,4 @@
-# NuBinary's Code Challenge
-
-This repository contains NuBinary's code challenge for a Ruby on Rails position.
+# Find the most influential people in their network
 
 ## Tech stack
 
